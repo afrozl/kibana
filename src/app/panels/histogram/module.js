@@ -208,7 +208,12 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           }
           facet = facet.keyField($scope.panel.time_field).valueField($scope.panel.value_field);
         }
-        facet = facet.interval(_interval).facetFilter($scope.ejs.QueryFilter(query));
+	// Hack to translate "1M" into "month" for the request.
+        if ( _interval === '1M' ) {
+          facet = facet.interval('month').facetFilter($scope.ejs.QueryFilter(query));
+        } else {
+          facet = facet.interval(_interval).facetFilter($scope.ejs.QueryFilter(query));
+        }
         request = request.facet(facet).size(0);
       });
 
